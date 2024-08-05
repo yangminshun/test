@@ -31,6 +31,8 @@ jobs:
           git checkout main
           git checkout -b cherry-pick-branch
           git cherry-pick ${{ env.SHA }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.CCC }}
 
       - name: Push changes
         run: |
