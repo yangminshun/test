@@ -1,0 +1,41 @@
+name: Cherry-Pick Bot
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+jobs:
+  cherry-pick:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Check if label exists
+        id: check_label
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const label = context.payload.pull_request.labels.find(label => label.name === 'cherry-pick');
+            if (!label) {
+              core.setOutput('cherry_pick', 'false');
+            } else {
+              core.setOutput('cherry_pick', 'true');
+            }
+
+      - name: Cherry-pick changes
+        if: steps.check_label.outputs.cherry_pick == 'true'
+        run: |
+          git fetch origin +refs/heads/main:main
+          git fetch origin +refs/heads/release:release
+          git checkout release
+          git cherry-pick -x ${{ github.event.pull_request.merge_commit_sha }}
+          git push origin release
