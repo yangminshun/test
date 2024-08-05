@@ -17,7 +17,7 @@ jobs:
       - name: CCGG
         uses: actions/checkout@v3
         with:
-          GITHUB_TOKEN: ${{ secrets.CCC }}
+          token: ${{ secrets.CCC }}
 
       - name: Set up Git
         run: |
@@ -34,7 +34,7 @@ jobs:
           git checkout -b cherry-pick-branch
           git cherry-pick ${{ env.SHA }}
         env:
-          GITHUB_TOKEN: ${{ secrets.CCC }}
+          token: ${{ secrets.CCC }}
 
       - name: Push changes
         run: |
@@ -55,4 +55,4 @@ jobs:
           PR_NUMBER=$(jq --raw-output .number "$GITHUB_EVENT_PATH")
           gh pr merge $PR_NUMBER --merge --admin --repo ${{ github.repository }}
         env:
-          GITHUB_TOKEN: ${{ secrets.CCC }}
+          token: ${{ secrets.CCC }}
