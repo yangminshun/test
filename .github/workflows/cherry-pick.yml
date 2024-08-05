@@ -14,8 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     if: contains(github.event.label.name, 'cherry-pick-to-release')
     steps:
-      - name: Checkout repository
+      - name: CCGG
         uses: actions/checkout@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.CCC }}
 
       - name: Set up Git
         run: |
