@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: CCGG
         uses: actions/checkout@v3
-        env:
+        with:
           GITHUB_TOKEN: ${{ secrets.CCC }}
 
       - name: Set up Git
