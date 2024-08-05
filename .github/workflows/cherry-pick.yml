@@ -15,7 +15,7 @@ jobs:
     if: contains(github.event.label.name, 'cherry-pick-to-release')
     steps:
       - name: CCGG
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with:
           token: ${{ secrets.CCC }}
 
