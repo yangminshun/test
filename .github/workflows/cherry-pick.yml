@@ -1,45 +1,31 @@
-name: Cherry-Pick Bot
-
+name: 'Cherry pick Release/candidate into develop'
 on:
-  pull_request:
-    types: [closed]
-    branches:
-      - main
-
-permissions:
-  contents: write
+    pull_request:
+        branches:
+            - release/candidate # Branches where the original PRs will be merged
+        types:
+            - closed
 
 jobs:
-  cherry-pick:
-    runs-on: ubuntu-latest
+    test-cherry-pick:
+        runs-on: ubuntu-latest
+        name: Test the cherry-pick action
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  submodules: recursive #If you need to operate on submodules
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+            - name: Cherry pick
+              id: cherry-pick
+              uses: wireapp/action-auto-cherry-pick@v1.0.1
+              with:
+                  target-branch: 'develop' # Branch which will receive the automatic cherry-picks
+                  submodules-target-branch: 'develop' # If you want the action to fast-forward the submodules to a specific branch
+                  pr-title-suffix: '🍒'
 
-      - name: Set up Git
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin https://x-access-token:${{ secrets.CCC }}@github.com/${{ github.repository }}
-
-      - name: Check if label exists
-        id: check_label
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const label = context.payload.pull_request.labels.find(label => label.name === 'cherry-pick');
-            if (!label) {
-              core.setOutput('cherry_pick', 'false');
-            } else {
-              core.setOutput('cherry_pick', 'true');
-            }
-
-      - name: Cherry-pick changes
-        if: steps.check_label.outputs.cherry_pick == 'true'
-        run: |
-          git fetch origin +refs/heads/main:main
-          git fetch origin +refs/heads/release:release
-          git checkout release
-          git cherry-pick -x ${{ github.event.pull_request.merge_commit_sha }}
-          git push origin release
+            - name: Get the output
+              run:
+                  echo "The created PR number is ${{
+                  steps.hello.outputs.pr-number }}"
