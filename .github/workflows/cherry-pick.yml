@@ -6,9 +6,6 @@ on:
   pull_request:
     types: [labeled]
 
-permissions:
-  contents: write
-
 jobs:
   cherry-pick:
     runs-on: ubuntu-latest
@@ -39,7 +36,7 @@ jobs:
       - name: Create pull request
         uses: peter-evans/create-pull-request@v5
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.CCC }}
           branch: cherry-pick-branch
           title: 'Cherry-pick commit ${{ env.SHA }}'
           body: 'Automated cherry-pick of commit ${{ env.SHA }} to main'
@@ -51,4 +48,4 @@ jobs:
           PR_NUMBER=$(jq --raw-output .number "$GITHUB_EVENT_PATH")
           gh pr merge $PR_NUMBER --merge --admin --repo ${{ github.repository }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CCC }}
