@@ -1,51 +1,41 @@
 name: Cherry-Pick Bot
 
 on:
-  issues:
-    types: [labeled]
   pull_request:
-    types: [labeled]
+    types: [closed]
+    branches:
+      - main
 
 jobs:
   cherry-pick:
     runs-on: ubuntu-latest
-    if: contains(github.event.label.name, 'cherry-pick-to-release')
+
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Set up Git
         run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Get the commit SHA
-        run: echo "SHA=${{ github.event.pull_request.head.sha || github.event.issue.pull_request.head.sha }}" >> $GITHUB_ENV
-
-      - name: Cherry-pick commit
-        run: |
-          git fetch origin +refs/heads/main:refs/remotes/origin/main
-          git checkout main
-          git checkout -b cherry-pick-branch
-          git cherry-pick ${{ env.SHA }}
-
-      - name: Push changes
-        run: |
-          git push origin cherry-pick-branch
-
-      - name: Create pull request
-        uses: peter-evans/create-pull-request@v5
+      - name: Check if label exists
+        id: check_label
+        uses: actions/github-script@v6
         with:
-          token: ${{ secrets.CCC }}
-          branch: cherry-pick-branch
-          title: 'Cherry-pick commit ${{ env.SHA }}'
-          body: 'Automated cherry-pick of commit ${{ env.SHA }} to main'
-          auto-merge: true  # Enables auto-merge for the created pull request
-          merge-method: merge  # Specify the merge method (merge, squash, rebase)
+          script: |
+            const label = context.payload.pull_request.labels.find(label => label.name === 'cherry-pick');
+            if (!label) {
+              core.setOutput('cherry_pick', 'false');
+            } else {
+              core.setOutput('cherry_pick', 'true');
+            }
 
-      - name: Merge pull request
+      - name: Cherry-pick changes
+        if: steps.check_label.outputs.cherry_pick == 'true'
         run: |
-          PR_NUMBER=$(jq --raw-output .number "$GITHUB_EVENT_PATH")
-          gh pr merge $PR_NUMBER --merge --admin --repo ${{ github.repository }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.CCC }}
+          git fetch origin +refs/heads/main:main
+          git fetch origin +refs/heads/release:release
+          git checkout release
+          git cherry-pick -x ${{ github.event.pull_request.merge_commit_sha }}
+          git push origin release
