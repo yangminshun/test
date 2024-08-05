@@ -1,8 +1,8 @@
-name: 'Cherry pick Release/candidate into develop'
+name: 'Cherry pick main into develop'
 on:
     pull_request:
         branches:
-            - release
+            - main
         types:
             - closed
 
