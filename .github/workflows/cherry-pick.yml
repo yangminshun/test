@@ -2,7 +2,7 @@ name: 'Cherry pick Release/candidate into develop'
 on:
     pull_request:
         branches:
-            - release/candidate # Branches where the original PRs will be merged
+            - release
         types:
             - closed
 
