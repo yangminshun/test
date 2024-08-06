@@ -1,2 +1,6 @@
 gdg
+<<<<<<< HEAD
 bbbbbbbbbbffffff
+=======
+aaaaaaa
+>>>>>>> 3fa99da (Merge pull request #25 from yangminshun/yangminshun-patch-2)
