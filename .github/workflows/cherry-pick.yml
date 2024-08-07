@@ -1,31 +1,21 @@
-name: 'Cherry pick main into develop'
+name: Cherry pick main into develop
 on:
-    pull_request:
-        branches:
-            - main
-        types:
-            - closed
-
+  pull_request_target:
+    branches:
+      - main
+    types: [closed]
+permissions:
+  contents: write # so it can comment
+  pull-requests: write # so it can create pull requests
 jobs:
-    test-cherry-pick:
-        runs-on: ubuntu-latest
-        name: Test the cherry-pick action
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
-                  submodules: recursive #If you need to operate on submodules
-
-            - name: Cherry pick
-              id: cherry-pick
-              uses: wireapp/action-auto-cherry-pick@v1.0.1
-              with:
-                  target-branch: 'develop' # Branch which will receive the automatic cherry-picks
-                  submodules-target-branch: 'develop' # If you want the action to fast-forward the submodules to a specific branch
-                  pr-title-suffix: '🍒'
-
-            - name: Get the output
-              run:
-                  echo "The created PR number is ${{
-                  steps.hello.outputs.pr-number }}"
+  backport:
+    name: Backport pull request
+    runs-on: ubuntu-latest
+    # Don't run on closed unmerged pull requests
+    if: github.event.pull_request.merged
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create backport pull requests
+        uses: korthout/backport-action@v3
+        with:
+          label_pattern: ^cherry-pick (release\/v[^ ]+)$
