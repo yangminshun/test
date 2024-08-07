@@ -22,3 +22,6 @@ jobs:
           merge_commits: skip
           branch_name: cherry-pick/${pull_number}-to-${target_branch}
           pull_title: "🍒 [cherry-pick into ${target_branch}] ${pull_title}"
+          copy_assignees: true
+          copy_labels_pattern: .*
+          copy_requested_reviewers: true
