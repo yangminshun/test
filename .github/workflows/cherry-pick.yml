@@ -20,4 +20,5 @@ jobs:
         with:
           label_pattern: ^cherry-pick (release\/v[^ ]+)$
           merge_commits: skip
+          branch_name: cherry-pick/${pull_number}-to-${target_branch}
           pull_title: "[🍒 cherry-pick into ${target_branch}] ${pull_title}"
