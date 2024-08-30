@@ -27,15 +27,6 @@ jobs:
             echo "has_difference=false" >> $GITHUB_OUTPUT
           fi
 
-      # Get product version from master branch
-      - name: Get product version
-        if: steps.check_difference.outputs.has_difference == 'true'
-        id: get_product_version
-        run: |
-          git switch master
-          product_version="v"$(sed -n '/MARKETING_VERSION/{s/MARKETING_VERSION = //;s/;//;s/^[[:space:]]*//;p;q;}' Fril.xcodeproj/project.pbxproj)
-          echo "product_version=$product_version" >> $GITHUB_OUTPUT
-
       # Create the branch for pre-merge (branch: pre-merge/vx.x.x-xxxxx)
       - name: Create the branch
         if: steps.check_difference.outputs.has_difference == 'true'
@@ -87,7 +78,6 @@ jobs:
             --head ${{ steps.create_branch.outputs.new_branch_name }} \
             --title "Pre-merge #${{ steps.create_branch.outputs.latest_merged_pr_number }} to master" \
             --body "- #${{ steps.create_branch.outputs.latest_merged_pr_number }}" \
-            --milestone ${{ steps.get_product_version.outputs.product_version }} \
             --reviewer ${latest_pr_author} \
             --reviewer fablicdev
         env:
