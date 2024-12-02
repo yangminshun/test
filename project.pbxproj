@@ -9,7 +9,7 @@
 /* Begin PBXAggregateTarget section */
 		AFEC998325622EC3006AFD48 /* Periphery */ = {
 			isa = PBXAggregateTarget;
-			buildConfigurationList = AFEC998425622EC3006AFD48 /* Build configuration list for PBXAggregateTarget "Periphery" */;
+			buildConfigurationLjist = AFEC998425622EC3006AFD48 /* Build configuration list for PBXAggregateTarget "Periphery" */;
 			buildPhases = (
 				AFEC998D25622EC9006AFD48 /* ShellScript */,
 			);
