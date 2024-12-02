@@ -17,14 +17,7 @@ jobs:
     - name: Check if the base branch is master or release/*
       id: check_base_branch
       run: |
-        base_branch="${{ github.event.pull_request.base.ref }}"
-        echo "Base branch: $base_branch"
-        if [[ "$base_branch" == "master" || "$base_branch" == release/* ]]; then
-          echo "run_workflow=true" >> $GITHUB_OUTPUT
-        else
-          echo "run_workflow=false" >> $GITHUB_OUTPUT
-          exit 0
-        fi
+        echo "run_workflow=true" >> $GITHUB_OUTPUT
         
     - name: Get PR number
       if: steps.check_base_branch.outputs.run_workflow == 'true'
