@@ -4,4 +4,4 @@ mergeable:
     validate:
       - do: milestone
         must_include:
-          regex: "v"$(sed -n '/MARKETING_VERSION/{s/MARKETING_VERSION = //;s/;//;s/^[[:space:]]*//;p;q;}' project.pbxproj)
+          regex: $(sed -n '/MARKETING_VERSION/{s/MARKETING_VERSION = //;s/;//;s/^[[:space:]]*//;p;q;}' project.pbxproj)
