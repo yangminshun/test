@@ -4,5 +4,5 @@ mergeable:
     validate:
       - do: milestone
         must_include:
-          regex: v1.12.3
-          message: v1.12.3 is required.
+          regex: v1.12.4
+          message: v1.12.4 is required.
