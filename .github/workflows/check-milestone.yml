@@ -1,0 +1,56 @@
+name: Check Milestone Before Merge
+
+on:
+  repository_dispatch:
+    types: [rerun-tests]
+  pull_request:
+    types: [opened, reopened, edited, synchronize, milestoned, demilestoned]
+
+jobs:
+  check-milestone:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Check if the base branch is master or release/*
+      id: check_base_branch
+      run: |
+        base_branch="${{ github.event.pull_request.base.ref }}"
+        echo "Base branch: $base_branch"
+        if [[ "$base_branch" == "master" || "$base_branch" == release/* ]]; then
+          echo "run_workflow=true" >> $GITHUB_OUTPUT
+        else
+          echo "run_workflow=false" >> $GITHUB_OUTPUT
+          exit 0
+        fi
+        
+    - name: Get PR number
+      if: steps.check_base_branch.outputs.run_workflow == 'true'
+      id: get_pr_number
+      run: echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+
+    - name: Get milestone version
+      if: steps.check_base_branch.outputs.run_workflow == 'true'
+      id: get_milestone_version
+      run: |
+        MILESTONE_VERSION=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          "https://api.github.com/repos/${{ github.repository }}/issues/${{ env.PR_NUMBER }}" | jq -r .milestone.title)
+        echo "MILESTONE_VERSION=$MILESTONE_VERSION" >> $GITHUB_ENV
+        
+    - name: Get product version
+      if: steps.check_base_branch.outputs.run_workflow == 'true'
+      id: get_product_version
+      run: |
+        PRODUCT_VERSION="v"$(sed -n '/MARKETING_VERSION/{s/MARKETING_VERSION = //;s/;//;s/^[[:space:]]*//;p;q;}' Fril.xcodeproj/project.pbxproj)
+        echo "PRODUCT_VERSION=$PRODUCT_VERSION" >> $GITHUB_ENV
+        
+    - name: Compare versions
+      if: steps.check_base_branch.outputs.run_workflow == 'true'
+      id: compare_versions
+      run: |
+        MILESTONE_VER=${{ env.MILESTONE_VERSION }}
+        PRODUCT_VER=${{ env.PRODUCT_VERSION }}
+        php -r 'if(version_compare("'"$MILESTONE_VER"'", "'"$PRODUCT_VER"'", "==")) { exit(0); }; exit(1);'
+      shell: bash
