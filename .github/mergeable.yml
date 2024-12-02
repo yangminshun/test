@@ -4,4 +4,4 @@ mergeable:
     validate:
       - do: milestone
         must_include:
-          regex: v1.12.3
+          regex: v1.12.4
