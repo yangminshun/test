@@ -5,3 +5,4 @@ mergeable:
       - do: milestone
         must_include:
           regex: v1.12.4
+          message: v1.12.4 is required.
