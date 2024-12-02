@@ -1,0 +1,7 @@
+version: 2
+mergeable:
+  - when: pull_request.*
+    validate:
+      - do: milestone
+        must_include:
+          regex: "v"$(sed -n '/MARKETING_VERSION/{s/MARKETING_VERSION = //;s/;//;s/^[[:space:]]*//;p;q;}' project.pbxproj)
