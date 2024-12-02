@@ -1,8 +1,9 @@
 version: 2
 mergeable:
   - when: pull_request.*, pull_request_target.*
+    name: "v1.12.4 is required."
     validate:
       - do: milestone
         must_include:
-          regex: v1.12.5
-          message: "v1.12.5 is required."
+          regex: v1.12.4
+          message: "v1.12.4 is required."
