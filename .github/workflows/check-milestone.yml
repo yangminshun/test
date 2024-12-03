@@ -29,6 +29,7 @@ jobs:
       uses: actions/github-script@v6
       with:
         script: |
+          const fs = require('fs');
           let branchName;
           if (context.eventName === 'push' || context.eventName === 'workflow_dispatch') {
             branchName = context.ref.replace('refs/heads/', '');
