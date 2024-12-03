@@ -55,18 +55,28 @@ jobs:
 
     - name: Set Status to Success
       if: success()
-      uses: actions/create-status@v1
+      uses: actions/github-script@v6
       with:
-        state: success
-        description: "All checks passed"
-        context: issue_comment_check
-        sha: ${{ github.event.pull_request.head.sha }}
-    
+        script: |
+          await github.repos.createCommitStatus({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            sha: context.payload.pull_request.head.sha,
+            state: "success",
+            context: "issue_comment_check",
+            description: "All checks passed"
+          });
+
     - name: Set Status to Failure
       if: failure()
-      uses: actions/create-status@v1
+      uses: actions/github-script@v6
       with:
-        state: failure
-        description: "Checks failed"
-        context: issue_comment_check
-        sha: ${{ github.event.pull_request.head.sha }}
+        script: |
+          await github.repos.createCommitStatus({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            sha: context.payload.pull_request.head.sha,
+            state: "failure",
+            context: "issue_comment_check"
+            description: "Checks failed"
+          });
