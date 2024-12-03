@@ -70,13 +70,9 @@ jobs:
           script: |
             const prNumbers = "${{ steps.pr_list.outputs.result }}".split(',').map(pr => pr.trim());
             for (const prNumber of prNumbers) {
-              await github.rest.actions.createWorkflowDispatch({
+              await github.rest.pulls.updateBranch({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                workflow_id: 'check-milestone.yml',
-                ref: 'yangminshun-patch-1',
-                inputs: {
-                  pull_request_number: prNumber
-                }
+                pull_number: prNumber
               });
             }
