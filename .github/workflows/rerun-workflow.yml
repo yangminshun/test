@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  check-version-change:
+  update-branch-for-pull-requests-if-needed:
     runs-on: ubuntu-latest
 
     permissions: write-all
