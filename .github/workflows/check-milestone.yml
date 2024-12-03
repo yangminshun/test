@@ -54,7 +54,7 @@ jobs:
       shell: bash
 
     - name: Set Status to Success
-      if: success()
+      if: ${{ success() && github.event_name == 'pull_request' }}
       uses: actions/github-script@v6
       with:
         script: |
@@ -68,7 +68,7 @@ jobs:
           });
 
     - name: Set Status to Failure
-      if: failure()
+      if: ${{ failure() && github.event_name == 'pull_request' }}
       uses: actions/github-script@v6
       with:
         script: |
@@ -76,6 +76,34 @@ jobs:
             owner: context.repo.owner,
             repo: context.repo.repo,
             sha: context.payload.pull_request.head.sha,
+            state: "failure",
+            context: "issue_comment_check",
+            description: "Checks failed"
+          });
+
+    - name: Set Status to Success
+      if: ${{ success() && github.event_name == 'issue_comment' }}
+      uses: actions/github-script@v6
+      with:
+        script: |
+          await github.rest.repos.createCommitStatus({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            sha: context.payload.issue.pull_request.head.sha,
+            state: "success",
+            context: "issue_comment_check",
+            description: "All checks passed"
+          });
+
+    - name: Set Status to Failure
+      if: ${{ failure() && github.event_name == 'issue_comment' }}
+      uses: actions/github-script@v6
+      with:
+        script: |
+          await github.rest.repos.createCommitStatus({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            sha: context.payload.issue.pull_request.head.sha,
             state: "failure",
             context: "issue_comment_check",
             description: "Checks failed"
