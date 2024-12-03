@@ -19,13 +19,13 @@ jobs:
       run: |
         echo "run_workflow=true" >> $GITHUB_OUTPUT
 
-    - name: Get PR number from pull request
-      if: steps.check_base_branch.outputs.run_workflow == 'true' && context.eventName === 'pull_request'
+    - name: Get PR number from pull_request
+      if: steps.check_base_branch.outputs.run_workflow == 'true' && github.eventName == 'pull_request'
       id: get_pr_number_1
       run: echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
         
-    - name: Get PR number from 
-      if: steps.check_base_branch.outputs.run_workflow == 'true' && context.eventName === 'issue_comment'
+    - name: Get PR number from issue_comment
+      if: steps.check_base_branch.outputs.run_workflow == 'true' && github.eventName == 'issue_comment'
       id: get_pr_number_2
       run: echo "PR_NUMBER=${{ github.event.issue.number }}" >> $GITHUB_ENV
 
