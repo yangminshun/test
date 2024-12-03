@@ -50,11 +50,15 @@ jobs:
       run: |
         MILESTONE_VER=${{ env.MILESTONE_VERSION }}
         PRODUCT_VER=${{ env.PRODUCT_VERSION }}
-        php -r 'if(version_compare("'"$MILESTONE_VER"'", "'"$PRODUCT_VER"'", "==")) { exit(0); }; exit(1);'
+        if php -r 'exit(version_compare("'"$MILESTONE_VER"'", "'"$PRODUCT_VER"'", "==") ? 0 : 1);'; then
+          echo "VERSION_MATCH=true" >> $GITHUB_ENV
+        else
+          echo "VERSION_MATCH=false" >> $GITHUB_ENV
+        fi
       shell: bash
 
     - name: Set Status to Success
-      if: ${{ success() && github.event_name == 'pull_request' }}
+      if: ${{ env.VERSION_MATCH == 'true' && github.event_name == 'pull_request' }}
       uses: actions/github-script@v6
       with:
         script: |
@@ -68,7 +72,7 @@ jobs:
           });
 
     - name: Set Status to Failure
-      if: ${{ failure() && github.event_name == 'pull_request' }}
+      if: ${{ env.VERSION_MATCH == 'false' && github.event_name == 'pull_request' }}
       uses: actions/github-script@v6
       with:
         script: |
@@ -82,7 +86,7 @@ jobs:
           });
 
     - name: Set Status to Success
-      if: ${{ success() && github.event_name == 'issue_comment' }}
+      if: ${{ env.VERSION_MATCH == 'true' && github.event_name == 'issue_comment' }}
       uses: actions/github-script@v6
       with:
         script: |
@@ -99,7 +103,7 @@ jobs:
           });
 
     - name: Set Status to Failure
-      if: ${{ failure() && github.event_name == 'issue_comment' }}
+      if: ${{ env.VERSION_MATCH == 'false' && github.event_name == 'issue_comment' }}
       uses: actions/github-script@v6
       with:
         script: |
