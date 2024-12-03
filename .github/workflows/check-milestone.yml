@@ -37,7 +37,7 @@ jobs:
       if: steps.check_base_branch.outputs.run_workflow == 'true'
       id: get_product_version
       run: |
-        PRODUCT_VERSION="v"$(sed -n '/MARKETING_VERSION/{s/MARKETING_VERSION = //;s/;//;s/^[[:space:]]*//;p;q;}' Fril.xcodeproj/project.pbxproj)
+        PRODUCT_VERSION="v"$(sed -n '/MARKETING_VERSION/{s/MARKETING_VERSION = //;s/;//;s/^[[:space:]]*//;p;q;}' project.pbxproj)
         echo "PRODUCT_VERSION=$PRODUCT_VERSION" >> $GITHUB_ENV
         
     - name: Compare versions
