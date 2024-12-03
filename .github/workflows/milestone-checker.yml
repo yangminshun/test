@@ -1,4 +1,4 @@
-name: Check Milestone Before Merge
+name: Run milestone checker
 
 on:
   issue_comment:
