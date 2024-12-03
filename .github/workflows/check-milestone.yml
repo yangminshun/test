@@ -52,3 +52,21 @@ jobs:
         PRODUCT_VER=${{ env.PRODUCT_VERSION }}
         php -r 'if(version_compare("'"$MILESTONE_VER"'", "'"$PRODUCT_VER"'", "==")) { exit(0); }; exit(1);'
       shell: bash
+
+    - name: Set Status to Success
+      if: success()
+      uses: actions/create-status@v1
+      with:
+        state: success
+        description: "All checks passed"
+        context: issue_comment_check
+        sha: ${{ github.event.pull_request.head.sha }}
+    
+    - name: Set Status to Failure
+      if: failure()
+      uses: actions/create-status@v1
+      with:
+        state: failure
+        description: "Checks failed"
+        context: issue_comment_check
+        sha: ${{ github.event.pull_request.head.sha }}
