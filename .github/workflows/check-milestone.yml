@@ -45,10 +45,10 @@ jobs:
           const matchingPR = pullRequests.find(pr => pr.head.ref === branchName);
           if (matchingPR) {
             console.log(`PR number found: ${matchingPR.number}`);
-            console.log(`PR_NUMBER=${matchingPR.number} >> $GITHUB_ENV`);
+            fs.appendFileSync(process.env.GITHUB_ENV, `PR_NUMBER=${matchingPR.number}\n`);
           } else {
             console.log(`No PR found for branch ${branchName}`);
-            console.log(`PR_NUMBER= >> $GITHUB_ENV`);
+            fs.appendFileSync(process.env.GITHUB_ENV, `PR_NUMBER=\n`);
           }
 
     - name: Get milestone version
