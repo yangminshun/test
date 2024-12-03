@@ -63,8 +63,6 @@ jobs:
         run: echo "No open pull requests targeting the branch. Exiting..."
 
       - name: Trigger workflow for matching PRs
-        # if: env.version_changed == 'true' 
-        # && steps.pr_list.outputs.result != ''
         uses: actions/github-script@v6
         with:
           script: |
@@ -73,6 +71,9 @@ jobs:
               await github.rest.pulls.updateBranch({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                pull_number: prNumber
+                pull_number: parseInt(prNumber)
               });
             }
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
