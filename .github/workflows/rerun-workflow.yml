@@ -15,10 +15,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2 # Fetch the current commit and the previous commit
+
       - name: Get previous version of the file
-        id: previous_version
+        id: previous_version_backup
         run: |
-          git fetch --depth=2
           PREVIOUS_VERSION=$(git show HEAD~1:project.pbxproj | sed -n '/MARKETING_VERSION/{s/MARKETING_VERSION = //;s/;//;s/^[[:space:]]*//;p;q;}')
           echo "PREVIOUS_VERSION=$PREVIOUS_VERSION" >> $GITHUB_ENV
         continue-on-error: true
