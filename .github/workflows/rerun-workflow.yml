@@ -74,7 +74,5 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 event_type: 'rerun-tests'
-                # ,
-                # client_payload: { pull_request_number: parseInt(prNumber, 10) }
               });
             }
