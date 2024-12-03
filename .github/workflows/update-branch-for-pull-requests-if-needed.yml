@@ -1,4 +1,6 @@
 name: Update branch for pull requests if needed
+
+on:
   push:
     branches:
       - main
