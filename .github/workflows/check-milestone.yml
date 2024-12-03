@@ -2,8 +2,11 @@ name: Check Milestone Before Merge
 
 on:
   workflow_dispatch:
-  repository_dispatch:
-    types: [rerun-tests]
+    inputs:
+      pull_request_number:
+        description: 'The pull request number to process'
+        required: true
+        type: string
   pull_request:
     types: [opened, reopened, edited, synchronize, milestoned, demilestoned]
 
