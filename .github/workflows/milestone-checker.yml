@@ -64,8 +64,8 @@ jobs:
             repo: context.repo.repo,
             sha: context.payload.pull_request.head.sha,
             state: "success",
-            context: "issue_comment_check",
-            description: "All checks passed"
+            context: "milestone check",
+            description: "Passed"
           });
 
     - name: Set Status to Failure
@@ -78,8 +78,8 @@ jobs:
             repo: context.repo.repo,
             sha: context.payload.pull_request.head.sha,
             state: "failure",
-            context: "issue_comment_check",
-            description: "Checks failed"
+            context: "milestone check",
+            description: "Failed"
           });
 
     - name: Set Status to Success
@@ -95,8 +95,8 @@ jobs:
             repo: context.repo.repo,
             sha: sha,
             state: "success",
-            context: "issue_comment_check",
-            description: "All checks passed"
+            context: "milestone check",
+            description: "Passed"
           });
 
     - name: Set Status to Failure
@@ -112,6 +112,6 @@ jobs:
             repo: context.repo.repo,
             sha: sha,
             state: "failure",
-            context: "issue_comment_check",
-            description: "Checks failed"
+            context: "milestone check",
+            description: "Failed"
           });
