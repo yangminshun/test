@@ -18,19 +18,14 @@ jobs:
       id: check_base_branch
       run: |
         echo "run_workflow=true" >> $GITHUB_OUTPUT
-    
-    - name: Debug Condition Variables
-      run: |
-        echo "Run workflow output: ${{ steps.check_base_branch.outputs.run_workflow }}"
-        echo "Event name: ${{ github.event_name }}"
 
     - name: Get PR number from pull_request
-      if: github.eventName == 'pull_request'
+      if: github.event_name == 'pull_request'
       id: get_pr_number_1
       run: echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
         
     - name: Get PR number from issue_comment
-      if: github.eventName == 'issue_comment'
+      if: github.event_name == 'issue_comment'
       id: get_pr_number_2
       run: echo "PR_NUMBER=${{ github.event.issue.number }}" >> $GITHUB_ENV
 
