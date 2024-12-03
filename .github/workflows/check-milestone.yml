@@ -1,9 +1,8 @@
 name: Check Milestone Before Merge
 
 on:
-  workflow_run:
-    workflows: [Rerun Checks on Marketing Version Change]
-    types: [completed]
+  issue_comment:
+    types: [created]
   pull_request:
     types: [opened, reopened, edited, synchronize, milestoned, demilestoned]
 
@@ -19,35 +18,16 @@ jobs:
       id: check_base_branch
       run: |
         echo "run_workflow=true" >> $GITHUB_OUTPUT
+
+    - name: Get PR number from pull request
+      if: steps.check_base_branch.outputs.run_workflow == 'true' && context.eventName === 'pull_request'
+      id: get_pr_number_1
+      run: echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
         
-    - name: Get PR number
-      if: steps.check_base_branch.outputs.run_workflow == 'true'
-      id: get_pr_number
-      uses: actions/github-script@v6
-      with:
-        script: |
-          const fs = require('fs');
-          let branchName;
-          if (context.eventName === 'push' || context.eventName === 'workflow_dispatch') {
-            branchName = context.ref.replace('refs/heads/', '');
-          } else if (context.eventName === 'pull_request') {
-            branchName = context.payload.pull_request.head.ref;
-          } else {
-            throw new Error(`Unsupported event type: ${context.eventName}`);
-          }
-          const { data: pullRequests } = await github.rest.pulls.list({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            state: 'open',
-          });
-          const matchingPR = pullRequests.find(pr => pr.head.ref === branchName);
-          if (matchingPR) {
-            console.log(`PR number found: ${matchingPR.number}`);
-            fs.appendFileSync(process.env.GITHUB_ENV, `PR_NUMBER=${matchingPR.number}\n`);
-          } else {
-            console.log(`No PR found for branch ${branchName}`);
-            fs.appendFileSync(process.env.GITHUB_ENV, `PR_NUMBER=\n`);
-          }
+    - name: Get PR number from 
+      if: steps.check_base_branch.outputs.run_workflow == 'true' && context.eventName === 'issue_comment'
+      id: get_pr_number_2
+      run: echo "PR_NUMBER=${{ github.event.issue.number }}" >> $GITHUB_ENV
 
     - name: Get milestone version
       if: steps.check_base_branch.outputs.run_workflow == 'true'
