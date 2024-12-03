@@ -9,10 +9,7 @@ jobs:
   check-version-change:
     runs-on: ubuntu-latest
 
-    permissions:
-      actions: write
-      contents: read
-      pull-requests: write
+    permissions: write-all
 
     steps:
       - name: Checkout code
