@@ -77,6 +77,6 @@ jobs:
             repo: context.repo.repo,
             sha: context.payload.pull_request.head.sha,
             state: "failure",
-            context: "issue_comment_check"
+            context: "issue_comment_check",
             description: "Checks failed"
           });
