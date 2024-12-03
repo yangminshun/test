@@ -50,11 +50,8 @@ jobs:
       run: |
         MILESTONE_VER=${{ env.MILESTONE_VERSION }}
         PRODUCT_VER=${{ env.PRODUCT_VERSION }}
-        if php -r 'exit(version_compare("'"$MILESTONE_VER"'", "'"$PRODUCT_VER"'", "==") ? 0 : 1);'; then
-          echo "VERSION_MATCH=true" >> $GITHUB_ENV
-        else
-          echo "VERSION_MATCH=false" >> $GITHUB_ENV
-        fi
+        RESULT=$(php -r 'echo version_compare("'"$MILESTONE_VER"'", "'"$PRODUCT_VER"'", "==") ? "true" : "false";')
+        echo "VERSION_MATCH=$RESULT" >> $GITHUB_ENV
       shell: bash
 
     - name: Set Status to Success
