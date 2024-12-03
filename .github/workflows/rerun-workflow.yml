@@ -74,6 +74,6 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 workflow_id: 'check-milestone.yml',
-                ref: 'main'
+                ref: 'yangminshun-patch-5'
               });
             }
