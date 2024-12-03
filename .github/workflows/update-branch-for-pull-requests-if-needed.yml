@@ -26,7 +26,7 @@ jobs:
       - name: Get current version of the file
         id: current_version
         run: |
-          CURRENT_VERSION="v"$(sed -n '/MARKETING_VERSION/{s/MARKETING_VERSION = //;s/;//;s/^[[:space:]]*//;p;q;}' project.pbxproj)
+          CURRENT_VERSION=$(sed -n '/MARKETING_VERSION/{s/MARKETING_VERSION = //;s/;//;s/^[[:space:]]*//;p;q;}' project.pbxproj)
           echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_ENV
 
       - name: Compare versions
@@ -39,11 +39,11 @@ jobs:
           fi
 
       - name: Skip if version not changed
-        if: env.version_changed != 'true'
+        if: env.VERSION_CHANGED != 'true'
         run: echo "Marketing version has not changed."
 
       - name: Fetch open pull requests targeting the branch
-        if: env.version_changed == 'true'
+        if: env.VERSION_CHANGED == 'true'
         id: pr_list
         uses: actions/github-script@v6
         with:
