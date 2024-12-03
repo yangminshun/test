@@ -26,7 +26,23 @@ jobs:
     - name: Get PR number
       if: steps.check_base_branch.outputs.run_workflow == 'true'
       id: get_pr_number
-      run: echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const branchName = context.ref.replace('refs/heads/', '');
+          const { data: pullRequests } = await github.rest.pulls.list({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            state: 'open',
+          });
+          const matchingPR = pullRequests.find(pr => pr.head.ref === branchName);
+          if (matchingPR) {
+            console.log(`PR number found: ${matchingPR.number}`);
+            console.log(`PR_NUMBER=${matchingPR.number} >> $GITHUB_ENV`);
+          } else {
+            console.log(`No PR found for branch ${branchName}`);
+            console.log(`PR_NUMBER= >> $GITHUB_ENV`);
+          }
 
     - name: Get milestone version
       if: steps.check_base_branch.outputs.run_workflow == 'true'
