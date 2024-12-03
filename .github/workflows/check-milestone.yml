@@ -86,10 +86,13 @@ jobs:
       uses: actions/github-script@v6
       with:
         script: |
+          const pullRequestUrl = context.payload.issue.pull_request.url;
+          const pullRequest = await github.request(pullRequestUrl);
+          const sha = pullRequest.data.head.sha;
           await github.rest.repos.createCommitStatus({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            sha: context.payload.issue.pull_request.head.sha,
+            sha: sha,
             state: "success",
             context: "issue_comment_check",
             description: "All checks passed"
@@ -100,10 +103,13 @@ jobs:
       uses: actions/github-script@v6
       with:
         script: |
+          const pullRequestUrl = context.payload.issue.pull_request.url;
+          const pullRequest = await github.request(pullRequestUrl);
+          const sha = pullRequest.data.head.sha;
           await github.rest.repos.createCommitStatus({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            sha: context.payload.issue.pull_request.head.sha,
+            sha: sha,
             state: "failure",
             context: "issue_comment_check",
             description: "Checks failed"
