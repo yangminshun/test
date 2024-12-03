@@ -1,12 +1,10 @@
-name: Update branch for pull requests targeting this branch if version is changed
-
-on:
+name: Update branch for pull requests if needed
   push:
     branches:
       - main
 
 jobs:
-  update-branch-for-pull-requests-if-needed:
+  if-version-is-changed:
     runs-on: ubuntu-latest
 
     permissions: write-all
