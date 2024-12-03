@@ -74,7 +74,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 workflow_id: 'check-milestone.yml',
-                ref: 'yangminshun-patch-5',
+                ref: 'yangminshun-patch-1',
                 inputs: {
                   pull_request_number: prNumber
                 }
