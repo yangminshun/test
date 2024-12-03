@@ -62,8 +62,9 @@ jobs:
           result-encoding: string
 
       - name: Skip if no pull requests found
-        if: steps.pr_list.outputs.result == '[]'
-        run: echo "No open pull requests targeting the branch. Exiting..."
+        # if: steps.pr_list.outputs.result == '[]'
+        # run: echo "No open pull requests targeting the branch. Exiting..."
+        run: echo "${{steps.pr_list.outputs.result}}"
 
       - name: Trigger workflow for matching PRs
         if: env.version_changed == 'true' && steps.pr_list.outputs.result != '[]'
