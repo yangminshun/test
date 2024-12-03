@@ -70,9 +70,17 @@ jobs:
           script: |
             const prNumbers = "${{ steps.pr_list.outputs.result }}".split(',').map(pr => pr.trim());
             for (const prNumber of prNumbers) {
-              await github.rest.pulls.updateBranch({
+              const pr = await github.rest.pulls.get({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 pull_number: parseInt(prNumber)
               });
+
+              if (pr.data.mergeable) {
+                await github.rest.pulls.updateBranch({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: parseInt(prNumber)
+                });
+              }
             }
