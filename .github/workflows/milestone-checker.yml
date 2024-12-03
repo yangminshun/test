@@ -5,47 +5,42 @@ on:
     types: [created]
   pull_request:
     types: [opened, reopened, edited, synchronize, milestoned, demilestoned]
+    branches:
+      - master
+      - release/*
 
 jobs:
-  check-milestone:
+  run-milestone-checker:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Check if the base branch is master or release/*
-      id: check_base_branch
-      run: |
-        echo "run_workflow=true" >> $GITHUB_OUTPUT
-
-    - name: Get PR number from pull_request
+    - name: Get PR number (event_name == 'pull_request')
       if: github.event_name == 'pull_request'
       id: get_pr_number_1
       run: echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
-        
-    - name: Get PR number from issue_comment
+
+    - name: Get PR number (event_name == 'issue_comment')
       if: github.event_name == 'issue_comment'
       id: get_pr_number_2
       run: echo "PR_NUMBER=${{ github.event.issue.number }}" >> $GITHUB_ENV
 
     - name: Get milestone version
-      if: steps.check_base_branch.outputs.run_workflow == 'true'
       id: get_milestone_version
       run: |
         MILESTONE_VERSION=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
           "https://api.github.com/repos/${{ github.repository }}/issues/${{ env.PR_NUMBER }}" | jq -r .milestone.title)
         echo "MILESTONE_VERSION=$MILESTONE_VERSION" >> $GITHUB_ENV
-        
+
     - name: Get product version
-      if: steps.check_base_branch.outputs.run_workflow == 'true'
       id: get_product_version
       run: |
         PRODUCT_VERSION="v"$(sed -n '/MARKETING_VERSION/{s/MARKETING_VERSION = //;s/;//;s/^[[:space:]]*//;p;q;}' project.pbxproj)
         echo "PRODUCT_VERSION=$PRODUCT_VERSION" >> $GITHUB_ENV
-        
+
     - name: Compare versions
-      if: steps.check_base_branch.outputs.run_workflow == 'true'
       id: compare_versions
       run: |
         MILESTONE_VER=${{ env.MILESTONE_VERSION }}
@@ -54,7 +49,7 @@ jobs:
         echo "VERSION_MATCH=$RESULT" >> $GITHUB_ENV
       shell: bash
 
-    - name: Set Status to Success
+    - name: Set Status to Success (event_name == 'pull_request')
       if: ${{ env.VERSION_MATCH == 'true' && github.event_name == 'pull_request' }}
       uses: actions/github-script@v6
       with:
@@ -68,7 +63,7 @@ jobs:
             description: "Passed"
           });
 
-    - name: Set Status to Failure
+    - name: Set Status to Failure (event_name == 'pull_request')
       if: ${{ env.VERSION_MATCH == 'false' && github.event_name == 'pull_request' }}
       uses: actions/github-script@v6
       with:
@@ -82,7 +77,7 @@ jobs:
             description: "Failed"
           });
 
-    - name: Set Status to Success
+    - name: Set Status to Success (event_name == 'issue_comment')
       if: ${{ env.VERSION_MATCH == 'true' && github.event_name == 'issue_comment' }}
       uses: actions/github-script@v6
       with:
@@ -99,7 +94,7 @@ jobs:
             description: "Passed"
           });
 
-    - name: Set Status to Failure
+    - name: Set Status to Failure (event_name == 'issue_comment')
       if: ${{ env.VERSION_MATCH == 'false' && github.event_name == 'issue_comment' }}
       uses: actions/github-script@v6
       with:
