@@ -73,7 +73,8 @@ jobs:
               await github.rest.repos.createDispatchEvent({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                event_type: 'rerun-tests',
-                client_payload: { pull_request_number: parseInt(prNumber, 10) }
+                event_type: 'rerun-tests'
+                # ,
+                # client_payload: { pull_request_number: parseInt(prNumber, 10) }
               });
             }
