@@ -73,4 +73,12 @@ jobs:
                 repo: context.repo.repo,
                 pull_number: parseInt(prNumber)
               });
+
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: parseInt(prNumber),
+                body: "Branch is updated.",
+              });
             }
+      
