@@ -63,16 +63,18 @@ jobs:
         run: echo "No open pull requests targeting the branch. Exiting..."
 
       - name: Trigger workflow for matching PRs
-        # if: env.version_changed == 'true' 
-        # && steps.pr_list.outputs.result != ''
         uses: actions/github-script@v6
         with:
           script: |
             const prNumbers = "${{ steps.pr_list.outputs.result }}".split(',').map(pr => pr.trim());
+            const octokit = github.getOctokit(process.env.PERSONAL_ACCESS_TOKEN);
             for (const prNumber of prNumbers) {
-              await github.rest.pulls.updateBranch({
+              await octokit.rest.pulls.updateBranch({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                pull_number: prNumber
+                pull_number: parseInt(prNumber)
               });
             }
+        env:
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
