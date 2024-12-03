@@ -74,6 +74,3 @@ jobs:
                 pull_number: parseInt(prNumber)
               });
             }
-        env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-
