@@ -1,9 +1,9 @@
-name: Rerun Checks on Marketing Version Change
+name: Update branch for pull requests targeting this branch if version is changed
 
 on:
   push:
     branches:
-      - '**'
+      - main
 
 jobs:
   check-version-change:
@@ -14,18 +14,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Checkout code
-        uses: actions/checkout@v3
         with:
-          fetch-depth: 2 # Fetch the current commit and the previous commit
+          fetch-depth: 2
 
       - name: Get previous version of the file
-        id: previous_version_backup
+        id: previous_version
         run: |
           PREVIOUS_VERSION=$(git show HEAD~1:project.pbxproj | sed -n '/MARKETING_VERSION/{s/MARKETING_VERSION = //;s/;//;s/^[[:space:]]*//;p;q;}')
           echo "PREVIOUS_VERSION=$PREVIOUS_VERSION" >> $GITHUB_ENV
-        continue-on-error: true
 
       - name: Get current version of the file
         id: current_version
@@ -44,9 +40,10 @@ jobs:
 
       - name: Skip if version not changed
         if: env.version_changed != 'true'
-        run: echo "Marketing version has not changed. Exiting..."
+        run: echo "Marketing version has not changed."
 
       - name: Fetch open pull requests targeting the branch
+        if: env.version_changed == 'true'
         id: pr_list
         uses: actions/github-script@v6
         with:
@@ -62,11 +59,12 @@ jobs:
               .map(pr => pr.number);
           result-encoding: string
 
-      - name: Skip if no pull requests found
+      - name: Skip if no pull request found
         if: steps.pr_list.outputs.result == ''
         run: echo "No open pull requests targeting the branch. Exiting..."
 
-      - name: Trigger workflow for matching PRs
+      - name: Update branch for matched pull requests
+        if: steps.pr_list.outputs.result != ''
         uses: actions/github-script@v6
         with:
           script: |
