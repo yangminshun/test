@@ -1,12 +1,9 @@
 name: Check Milestone Before Merge
 
 on:
-  workflow_dispatch:
-    inputs:
-      pull_request_number:
-        description: 'The pull request number to process'
-        required: true
-        type: string
+  workflow_run:
+    workflows: [Rerun Checks on Marketing Version Change]
+    types: [completed]
   pull_request:
     types: [opened, reopened, edited, synchronize, milestoned, demilestoned]
 
