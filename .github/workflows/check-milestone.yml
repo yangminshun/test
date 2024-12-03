@@ -1,6 +1,7 @@
 name: Check Milestone Before Merge
 
 on:
+  workflow_dispatch:
   repository_dispatch:
     types: [rerun-tests]
   pull_request:
