@@ -62,21 +62,20 @@ jobs:
           result-encoding: string
 
       - name: Skip if no pull requests found
-        # if: steps.pr_list.outputs.result == '[]'
-        # run: echo "No open pull requests targeting the branch. Exiting..."
-        run: echo "${{steps.pr_list.outputs.result}}"
+        if: steps.pr_list.outputs.result == ''
+        run: echo "No open pull requests targeting the branch. Exiting..."
 
       - name: Trigger workflow for matching PRs
-        if: env.version_changed == 'true' && steps.pr_list.outputs.result != '[]'
+        if: env.version_changed == 'true' && steps.pr_list.outputs.result != ''
         uses: actions/github-script@v6
         with:
           script: |
-            const prNumbers = JSON.parse(`{{ steps.pr_list.outputs.result }}`);
+            const prNumbers = "${{ steps.pr_list.outputs.result }}".split(',').map(pr => pr.trim());
             for (const prNumber of prNumbers) {
               await github.rest.repos.createDispatchEvent({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 event_type: 'rerun-tests',
-                client_payload: { pull_request_number: prNumber }
+                client_payload: { pull_request_number: parseInt(prNumber, 10) }
               });
             }
