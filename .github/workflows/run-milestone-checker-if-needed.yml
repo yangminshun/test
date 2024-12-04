@@ -1,4 +1,4 @@
-name: Update branch for pull requests if needed
+name: Run milestone checker if needed
 
 on:
   push:
@@ -77,10 +77,14 @@ jobs:
               });
 
               if (pr.data.mergeable) {
-                await github.rest.pulls.updateBranch({
+                await github.rest.actions.createWorkflowDispatch({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
-                  pull_number: parseInt(prNumber)
+                  workflow_id: 'run-milestone-checker.yml',
+                  ref: context.ref,
+                  inputs: {
+                    prNumber: prNumber
+                  }
                 });
               }
             }
