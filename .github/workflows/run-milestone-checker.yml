@@ -53,41 +53,16 @@ jobs:
         echo "VERSION_MATCH=$RESULT" >> $GITHUB_ENV
       shell: bash
 
-    - name: Set Status to Success (event_name == 'pull_request')
-      if: ${{ env.VERSION_MATCH == 'true' && github.event_name == 'pull_request' }}
+    - name: Set Status to Success
+      if: env.VERSION_MATCH == 'true'
       uses: actions/github-script@v6
       with:
         script: |
-          await github.rest.repos.createCommitStatus({
+          const pullRequest = await github.rest.pulls.get({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            sha: context.payload.pull_request.head.sha,
-            state: "success",
-            context: "milestone check",
-            description: "Passed"
+            pull_number: parseInt(process.env.PR_NUMBER)
           });
-
-    - name: Set Status to Failure (event_name == 'pull_request')
-      if: ${{ env.VERSION_MATCH == 'false' && github.event_name == 'pull_request' }}
-      uses: actions/github-script@v6
-      with:
-        script: |
-          await github.rest.repos.createCommitStatus({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            sha: context.payload.pull_request.head.sha,
-            state: "failure",
-            context: "milestone check",
-            description: "Failed"
-          });
-
-    - name: Set Status to Success (event_name == 'issue_comment')
-      if: ${{ env.VERSION_MATCH == 'true' && github.event_name == 'issue_comment' }}
-      uses: actions/github-script@v6
-      with:
-        script: |
-          const pullRequestUrl = context.payload.issue.pull_request.url;
-          const pullRequest = await github.request(pullRequestUrl);
           const sha = pullRequest.data.head.sha;
           await github.rest.repos.createCommitStatus({
             owner: context.repo.owner,
@@ -98,13 +73,16 @@ jobs:
             description: "Passed"
           });
 
-    - name: Set Status to Failure (event_name == 'issue_comment')
-      if: ${{ env.VERSION_MATCH == 'false' && github.event_name == 'issue_comment' }}
+    - name: Set Status to Failure
+      if: env.VERSION_MATCH == 'false'
       uses: actions/github-script@v6
       with:
         script: |
-          const pullRequestUrl = context.payload.issue.pull_request.url;
-          const pullRequest = await github.request(pullRequestUrl);
+          const pullRequest = await github.rest.pulls.get({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: parseInt(process.env.PR_NUMBER)
+          });
           const sha = pullRequest.data.head.sha;
           await github.rest.repos.createCommitStatus({
             owner: context.repo.owner,
