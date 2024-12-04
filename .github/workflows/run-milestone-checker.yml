@@ -90,5 +90,5 @@ jobs:
             sha: sha,
             state: "failure",
             context: "milestone check",
-            description: "Milestone should be ${ process.env.PRODUCT_VERSION }"
+            description: "Milestone should be ${{ process.env.PRODUCT_VERSION }}"
           });
