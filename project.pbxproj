@@ -15444,7 +15444,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.8.9;
+				MARKETING_VERSION = 1.1.9;
 				OTHER_SWIFT_FLAGS = "$(inherited) -DPRODUCTION -DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = jp.co.fablic.fril.enterprise;
 				PRODUCT_NAME = Fril;
