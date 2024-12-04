@@ -69,22 +69,13 @@ jobs:
         with:
           script: |
             const prNumbers = "${{ steps.pr_list.outputs.result }}".split(',').map(pr => pr.trim());
-            for (const prNumber of prNumbers) {
-              const pr = await github.rest.pulls.get({
+              await github.rest.actions.createWorkflowDispatch({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                pull_number: parseInt(prNumber)
+                workflow_id: 'run-milestone-checker.yml',
+                ref: context.ref,
+                inputs: {
+                  prNumber: prNumber
+                }
               });
-
-              if (pr.data.mergeable) {
-                await github.rest.actions.createWorkflowDispatch({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  workflow_id: 'run-milestone-checker.yml',
-                  ref: context.ref,
-                  inputs: {
-                    prNumber: prNumber
-                  }
-                });
-              }
             }
