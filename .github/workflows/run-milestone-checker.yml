@@ -27,7 +27,7 @@ jobs:
       run: echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
 
     - name: Get PR number (event_name == 'workflow_dispatch')
-      if: github.event_name == 'issue_comment'
+      if: github.event_name == 'workflow_dispatch'
       id: get_pr_number_2
       run: echo "PR_NUMBER=${{ github.event.inputs.prNumber }}" >> $GITHUB_ENV
 
