@@ -69,6 +69,7 @@ jobs:
         with:
           script: |
             const prNumbers = "${{ steps.pr_list.outputs.result }}".split(',').map(pr => pr.trim());
+            for (const prNumber of prNumbers) {
               await github.rest.actions.createWorkflowDispatch({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
