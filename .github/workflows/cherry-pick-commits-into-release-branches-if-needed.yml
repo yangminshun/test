@@ -1,4 +1,4 @@
-name: Cherry-pick commits into release branch if needed
+name: Cherry-pick commits into release branches if needed
 
 on:
   pull_request_target:
@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   cherry-pick:
-    name: Cherry-pick commits into release branch
+    name: Cherry-pick commits into release branches
     runs-on: ubuntu-latest
     # Don't run on closed unmerged pull requests
     if: github.event.pull_request.merged
