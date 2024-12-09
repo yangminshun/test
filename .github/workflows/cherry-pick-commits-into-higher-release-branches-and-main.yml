@@ -1,4 +1,4 @@
-name: Cherry-pick commits into later release branches
+name: Cherry-pick commits into higher release branches and main
 
 on:
   pull_request_target:
@@ -11,8 +11,8 @@ permissions:
   pull-requests: write # so it can create pull requests
 
 jobs:
-  cherry-pick:
-    name: Cherry-pick commits into release branches
+  cherry-pick-if-needed:
+    name: Cherry-pick commits into higher release branches and main
     runs-on: ubuntu-latest
     # Don't run on closed unmerged pull requests
     if: github.event.pull_request.merged
@@ -21,60 +21,55 @@ jobs:
 
       - name: Extract current version from base branch
         run: |
-          # Extract base branch name (e.g., "release/v1.2.3")
+          # Extract base branch name (e.g., "release/v1.2.3.4.5")
           base_branch="${{ github.event.pull_request.base.ref }}"
           echo "Base branch: $base_branch"
 
-          # Ensure the branch matches the expected format "release/v*"
+          # Ensure the branch matches the expected format "release/v([0-9]+(\.[0-9]+)*)"
           if [[ "$base_branch" =~ ^release/v([0-9]+(\.[0-9]+)*)$ ]]; then
             current_version="${BASH_REMATCH[1]}"
-            echo "Extracted version: $current_version"
+            echo "Current version: $current_version"
 
             # Export current version for later steps
             echo "CURRENT_VERSION=$current_version" >> $GITHUB_ENV
           else
-            echo "Error: Base branch does not match 'release/v*' format."
+            echo "Error: Base branch does not match 'release/v([0-9]+(\.[0-9]+)*)' format."
             exit 1
           fi
 
-      - name: Print the current version
-        run: |
-          echo "Current version: $CURRENT_VERSION"
-
-      - name: Get all branches with higher versions
+      - name: Get all branches with higher versions including main branch
         env:
           CURRENT_VERSION: ${{ env.CURRENT_VERSION }}
         run: |
           # Fetch all remote branches
           git fetch --all
 
-          # List all branches matching 'release/v*'
-          branches=$(git branch -r | grep -Eo 'release/v[0-9]+(\.[0-9]+)*' | sed 's|origin/||')
+          # List all branches matching 'release/v([0-9]+(\.[0-9]+)*)'
+          branches=$(git branch -r | grep -Eo '^release/v[0-9]+(\.[0-9]+)*$')
           echo "All release branches:"
           echo "$branches"
 
-          # Filter branches with versions greater than the current version using PHP
-          higher_branches=$(echo "$branches" | while read -r branch; do
-            version=${branch#release/v}
-            php -r "echo version_compare('$version', '${CURRENT_VERSION}') > 0 ? '$branch ' : '';"
-          done)
-          echo "Branches greater than $CURRENT_VERSION:"
+          # Filter branches with versions higher than the current version
+          higher_branches=$(
+            echo "$branches" | while read -r branch; do
+              version=${branch#release/v}
+              php -r "echo version_compare('$version', '${CURRENT_VERSION}') > 0 ? '$branch ' : '';"
+            done
+          )
+          echo "Branches higher than v$CURRENT_VERSION:"
           echo "$higher_branches"
 
           # Export branches as an environment variable
           echo "HIGHER_BRANCHES=$higher_branches main" >> $GITHUB_ENV
-
-      - name: Print higher branches
-        run: |
-          echo "Higher branches: $HIGHER_BRANCHES"
   
-      - name: Create backport pull requests
+      - name: Create cherry-pick pull requests
         uses: korthout/backport-action@v3
         with:
           target_branches: ${{ env.HIGHER_BRANCHES }}
           merge_commits: skip
           branch_name: cherry-pick/${pull_number}-to-${target_branch}
           pull_title: "🍒 [cherry-pick into ${target_branch}] ${pull_title}"
+          pull_description: "Cherry-pick of #${pull_number} (${pull_title}) to `${target_branch}`."
           copy_assignees: true
           copy_labels_pattern: .*
           copy_requested_reviewers: true
