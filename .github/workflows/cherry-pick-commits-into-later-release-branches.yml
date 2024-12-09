@@ -38,7 +38,10 @@ jobs:
           fi
 
       - name: Print the current version
-        run: echo "Current version: $CURRENT_VERSION"
+        env:
+          CURRENT_VERSION: ${{ env.CURRENT_VERSION }}
+        run: |
+          echo "Current version: ${CURRENT_VERSION}"
 
       - name: Get all branches with higher versions
         env:
