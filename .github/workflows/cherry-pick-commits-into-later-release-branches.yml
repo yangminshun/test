@@ -71,7 +71,7 @@ jobs:
       - name: Create backport pull requests
         uses: korthout/backport-action@v3
         with:
-          target_branches: $HIGHER_BRANCHES
+          target_branches: ${{ env.HIGHER_BRANCHES }}
           merge_commits: skip
           branch_name: cherry-pick/${pull_number}-to-${target_branch}
           pull_title: "🍒 [cherry-pick into ${target_branch}] ${pull_title}"
