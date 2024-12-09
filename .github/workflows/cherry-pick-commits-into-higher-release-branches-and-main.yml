@@ -45,7 +45,6 @@ jobs:
           git fetch --all
 
           # List all branches matching 'release/v([0-9]+(\.[0-9]+)*)'
-          # branches=$(git branch -r | grep -Eo '^(origin/)?release/v[0-9]+(\.[0-9]+)*$' | sed 's|origin/||')
           branches=$(git branch -r | grep -Eo 'release/v[0-9]+(\.[0-9]+)*' | sed 's|origin/||')
           echo "All release branches:"
           echo "$branches"
