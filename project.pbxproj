@@ -15444,7 +15444,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 8.3.0;
+				MARKETING_VERSION = 9.1.0;
 				OTHER_SWIFT_FLAGS = "$(inherited) -DPRODUCTION -DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = jp.co.fablic.fril.enterprise;
 				PRODUCT_NAME = Fril;
@@ -15479,7 +15479,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 8.3.0;
+				MARKETING_VERSION = 9.1.0;
 				OTHER_SWIFT_FLAGS = "$(inherited) -DPRODUCTION";
 				PRODUCT_BUNDLE_IDENTIFIER = jp.co.fablic.fril;
 				PRODUCT_NAME = Fril;
@@ -15518,7 +15518,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 8.3.0;
+				MARKETING_VERSION = 9.1.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-fprofile-instr-generate",
@@ -15560,7 +15560,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 8.3.0;
+				MARKETING_VERSION = 9.1.0;
 				OTHER_SWIFT_FLAGS = "$(inherited) -DDEVELOPMENT";
 				PRODUCT_BUNDLE_IDENTIFIER = jp.co.fablic.fril.test.enterprise;
 				PRODUCT_NAME = "T-Fril";
@@ -15662,7 +15662,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.3.0;
+				MARKETING_VERSION = 9.1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = jp.co.fablic.fril.test.debug.NotificationServiceExt;
@@ -15703,7 +15703,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.3.0;
+				MARKETING_VERSION = 9.1.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = jp.co.fablic.fril.test.enterprise.NotificationServiceExt;
@@ -15749,7 +15749,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.3.0;
+				MARKETING_VERSION = 9.1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = jp.co.fablic.fril.enterprise.NotificationServiceExt;
@@ -15789,7 +15789,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.3.0;
+				MARKETING_VERSION = 9.1.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = jp.co.fablic.fril.NotificationServiceExt;

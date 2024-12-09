@@ -1,15 +1,18 @@
-name: Cherry pick main into develop
+name: Cherry-pick commits into release branches if needed
+
 on:
   pull_request_target:
     branches:
       - main
     types: [closed]
+
 permissions:
   contents: write # so it can comment
   pull-requests: write # so it can create pull requests
+
 jobs:
-  backport:
-    name: Backport pull request
+  cherry-pick:
+    name: Cherry-pick commits into release branches
     runs-on: ubuntu-latest
     # Don't run on closed unmerged pull requests
     if: github.event.pull_request.merged
