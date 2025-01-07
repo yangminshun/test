@@ -15,7 +15,7 @@ jobs:
     name: Cherry-pick commits into higher release branches and main
     runs-on: ubuntu-latest
     # Don't run on closed unmerged pull requests
-    if: ${{ github.event.pull_request.merged && "! startsWith(github.head_ref, 'cherry-pick/')" }}
+    if: ${{ github.event.pull_request.merged && ! startsWith(github.head_ref, 'cherry-pick/') }}
     steps:
       - uses: actions/checkout@v4
 
