@@ -79,9 +79,7 @@ jobs:
       - name: Approve created cherry-pick pull requests
         run: |
           echo "${{ env.CREATED_PULL_NUMBERS }}" | tr ' ' '\n' | while read -r created_pull_number; do
-            echo "PPPPPPPP"
-            echo "$created_pull_number"
-            # gh pr review "$created_pull_number" --approve
+            gh pr review "$created_pull_number" --approve
           done
         env:
           GITHUB_TOKEN: ${{ secrets.FABLICDEV_PAT }}
