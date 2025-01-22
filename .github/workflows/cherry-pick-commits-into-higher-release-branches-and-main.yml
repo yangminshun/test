@@ -63,6 +63,7 @@ jobs:
           echo "HIGHER_BRANCHES=$higher_branches main" >> $GITHUB_ENV
   
       - name: Create cherry-pick pull requests
+        id: create_cherry-pick_prs
         uses: korthout/backport-action@v3
         with:
           target_branches: ${{ env.HIGHER_BRANCHES }}
@@ -74,3 +75,13 @@ jobs:
           copy_labels_pattern: .*
           copy_requested_reviewers: true
           experimental: "{ \"conflict_resolution\": \"draft_commit_conflicts\" }"
+
+      - name: Approve created cherry-pick pull requests
+        run: |
+          echo env.CREATED_PULL_NUMBERS | tr ' ' '\n' | while read -r created_pull_number; do
+            echo "Processing branch: $created_pull_number"
+            # gh pr review ${{ github.event.pull_request.number }} --approve
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.FABLICDEV_PAT }}
+          CREATED_PULL_NUMBERS: ${{ steps.create_cherry-pick_prs.outputs.created_pull_numbers }}
