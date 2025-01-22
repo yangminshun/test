@@ -79,7 +79,8 @@ jobs:
       - name: Approve created cherry-pick pull requests
         run: |
           echo env.CREATED_PULL_NUMBERS | tr ' ' '\n' | while read -r created_pull_number; do
-            echo "Processing branch: $created_pull_number"
+            echo "PPPPPPPP"
+            echo $created_pull_number
             # gh pr review ${{ github.event.pull_request.number }} --approve
           done
         env:
