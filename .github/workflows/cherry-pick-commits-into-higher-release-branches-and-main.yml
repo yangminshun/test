@@ -83,3 +83,4 @@ jobs:
           done
         env:
           CREATED_PULL_NUMBERS: ${{ steps.create_cherry-pick_prs.outputs.created_pull_numbers }}
+          GITHUB_TOKEN: ${{ github.token }}
