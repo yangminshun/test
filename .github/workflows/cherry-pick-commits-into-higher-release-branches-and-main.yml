@@ -82,5 +82,4 @@ jobs:
             gh pr review "$created_pull_number" --approve
           done
         env:
-          GITHUB_TOKEN: ${{ secrets.FABLICDEV_PAT }}
           CREATED_PULL_NUMBERS: ${{ steps.create_cherry-pick_prs.outputs.created_pull_numbers }}
